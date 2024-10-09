@@ -1,9 +1,10 @@
-
+import "./FirstCss.css"
 
 function FirstComponent() {
-    const myStyle = { 
-        "color": "red"
-     }
+    const myStyle = {
+        color: "red",
+        fontSize:"32px"
+    }
     return (
         <div>
             <p className="petka">
