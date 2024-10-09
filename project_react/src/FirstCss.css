@@ -1,7 +1,21 @@
-*{
-    background-color: rgb(236, 235, 235);
-    text-align: center;
+div{
+    margin: 3%;}
+.inputs{
+    margin-left: 15%;
 }
-.petka{
-    color: rgb(11, 82, 11);
+.option{
+    margin-left: 15%;
+    margin-top: 1%;
+}
+.flex{
+    display: flex;
+}
+.select{
+    margin-left: 50%;
+    margin-top: 1%;
+}
+.bttns{
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
 }
