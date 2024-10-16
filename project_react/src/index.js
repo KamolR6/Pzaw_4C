@@ -6,13 +6,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import FirstComponent from './FirstComponent';
 import Form from './Form';
+import FirstTable from './FirstTable';
+import FirstRow from './FirstRow';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* <App /> */}
     {/* <FirstComponent /> */}
-    <Form />
+    {/* <Form /> */}
+    <FirstTable />
+    <FirstRow />
   </React.StrictMode>
 );
 
