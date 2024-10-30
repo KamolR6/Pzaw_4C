@@ -4,3 +4,5 @@
 4. W folderze klonowanym start.bat
 5. cd project_react
 6. npm start
+7. npm i express (react_backend)
+8. node index js
