@@ -8,6 +8,7 @@ import FirstComponent from './FirstComponent';
 import Form from './Form';
 import FirstTable from './FirstTable';
 import FirstRow from './FirstRow';
+import AxiosExample from './AxiosExample';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,8 +16,9 @@ root.render(
     {/* <App /> */}
     {/* <FirstComponent /> */}
     {/* <Form /> */}
-    <FirstTable />
-    <FirstRow />
+    {/* <FirstTable />
+    <FirstRow /> */}
+    <AxiosExample></AxiosExample>
   </React.StrictMode>
 );
 
