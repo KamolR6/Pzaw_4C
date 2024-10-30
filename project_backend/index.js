@@ -6,10 +6,10 @@ application.get("/", (request, response) => {
     response.send("<div><p> Fortnite is the best game in the universe </p> </div>")
 })
 
-application.get("/abc", (request, response) => {
+application.get("/fortnite", (request, response) => {
     response.status(500)
-    response.send("<div><p> Fortnite is the best game in the world </p> </div>")
-})
+    response.send("<div><img src='https://static.wikia.nocookie.net/fortnite/images/1/11/Bars_(Large)_-_Currency_-_Fortnite.png'></div>")
+})  
 
 application.post("/abc", (request, response) => {
     response.status(500)
@@ -22,8 +22,9 @@ sci_router.get("/", (request, response)=>{
 })
 sci_router.get("/json", (request, response)=>{
     const data = {
-        ch1: "winter",
-        ch2: 2
+        ch1s7: "winterfest",
+        ch2s2: "Sentino - Midas",
+        ch2s4: "Avendzers"
     }
     response.json(data)
 })
