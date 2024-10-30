@@ -6,3 +6,4 @@
 6. npm start
 7. npm i express (react_backend)
 8. node index js
+9. npm install nodemon
