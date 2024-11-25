@@ -1,4 +1,4 @@
-// komponent do generowania
+//Component used in ExampleTable to unify data read in there
 function FirstRow(props) {
     return (
         <tr>

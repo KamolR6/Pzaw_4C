@@ -1,4 +1,6 @@
-import FirstRow from "./FirstRow"
+//Example of using components to unify data read
+
+import ExampleRow from "./ExampleRow"
 
 function FirstTable() {
     // zwykla tablica jednoelementowa
@@ -48,7 +50,7 @@ function FirstTable() {
                         })
                     }
                     {
-                        data2.map((el, id)=><FirstRow index={id} key1={el.k1} key2={el.k2}/>)
+                        data2.map((el, id)=><ExampleRow index={id} key1={el.k1} key2={el.k2}/>)
 
                         // data2.map zwraca kod HTML
                         // data2.map((el, id) => {
