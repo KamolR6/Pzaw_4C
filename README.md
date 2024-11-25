@@ -1,9 +1,10 @@
-1. Sciagniecie node z nauczycielksiego
-2. Wrzucenie node do folderu klonowanego z repo i zmiana sciezki w start.bat
-3. Otworzenie tego w visualu i odpalenie cmd w terminalu
-4. W folderze klonowanym start.bat
-5. cd project_react
-6. npm start
-7. npm i express (react_backend)
-8. node index js
-9. npm install nodemon
+1. sciagniecie node z nauczycielskiego
+1. sciagniecie node do project_backend i project_react
+1. omiana sciezki w start.bat
+1. otworzenie tego w visualu i odpalenie cmd w terminalu
+1. w folderze klonowanym start.bat
+1. cd project_react
+1. npm start
+1. nowy terminal
+1. cd project_backend
+1. npm start
