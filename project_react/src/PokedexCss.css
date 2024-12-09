@@ -1,0 +1,25 @@
+.pokemon-container {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping of items to the next row */
+  gap: 10px; /* Adds space between the boxes */
+  justify-content: flex-start; /* Align items to the left */
+}
+
+.pokemon-box {
+  width: calc(16.66% - 10px); /* 6 boxes per row, considering the gap */
+  padding: 10px;
+  background-color: #f0f0f0; /* Light background for the boxes */
+  border: 1px solid #ccc; /* Light border around each box */
+  text-align: center;
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer; /* Makes the boxes clickable */
+  transition: background-color 0.3s ease;
+}
+
+.pokemon-box:hover {
+  background-color: #e0e0e0; /* Darker background on hover */
+}
+
+input[type="checkbox"] {
+  margin-left: 5px;
+}

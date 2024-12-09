@@ -64,10 +64,10 @@ function TaskPokedex() {
         <option value="japanese">Japanese</option>
       </select>
 
-      <div>
+      <div style={{"display":"flex"}} >
         {types.length > 0 ? (
           types.map((type, index) => (
-            <div key={index}>
+            <div key={index} style={{"margin":"30px"}}>
               <label htmlFor={`type-${index}`}>{type[language]}</label>
               <input
                 id={`type-${index}`}
@@ -88,10 +88,10 @@ function TaskPokedex() {
         )}
       </div>
 
-      <div>
+      <div style={{"display":"flex", "flexWrap":"wrap"}}>
         {shownPokemons.length > 0 ? (
           shownPokemons.map(pokemon => (
-            <div key={pokemon.id} onClick={() => fetchPokemonDetails(pokemon.id)}>
+            <div key={pokemon.id} style={{"width":"20%", "margin":"20px", "backgroundColor":"lightgray" }} onClick={() => fetchPokemonDetails(pokemon.id)}>
               <p>{pokemon.name[language]}</p>
             </div>
           ))
