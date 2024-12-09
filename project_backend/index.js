@@ -27,8 +27,9 @@ pokemonRouter.get("/", (request, response) => {
 
 })
 pokemonRouter.get("/type", (request, response) => {
-    dataTypes.push(filePathTypes.map(el => el.english))
-    response.json(dataTypes[0]);
+    const lang = request.query.lang || "english"; 
+    const types = filePathTypes.map(type => type);
+    response.json(types);
 
     // filePathTypes.forEach(element => {
     //     response.send(
@@ -38,6 +39,17 @@ pokemonRouter.get("/type", (request, response) => {
     // response.send(filePathTypes.map((el,id) => {el.english}))
 })
 
+pokemonRouter.get("/pokemons", (request, response) => {
+    dataPokedex.push(filePathPokedex.map(el => el))
+    response.json(dataPokedex[0]);
+
+    // filePathTypes.forEach(element => {
+    //     response.send(
+    //         element.english
+    //     )    
+    // })
+    // response.send(filePathTypes.map((el,id) => {el.english}))
+})
 // application.post("/abc", (request, response) => {
 //     const data = request.body
 //     console.log(data)
