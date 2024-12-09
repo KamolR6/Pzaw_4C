@@ -40,16 +40,27 @@ pokemonRouter.get("/type", (request, response) => {
 })
 
 pokemonRouter.get("/pokemons", (request, response) => {
-    dataPokedex.push(filePathPokedex.map(el => el))
-    response.json(dataPokedex[0]);
+    const searched = request.query.searched?.toLowerCase() || ""; // Convert searched term to lowercase
+    const types = request.query.types ? JSON.parse(request.query.types) : []; // Parse types if provided or default to an empty array
 
-    // filePathTypes.forEach(element => {
-    //     response.send(
-    //         element.english
-    //     )    
-    // })
-    // response.send(filePathTypes.map((el,id) => {el.english}))
-})
+    const filteredPokemons = filePathPokedex.filter(pokemon => {
+        // Check if the name contains the searched term
+        const nameMatches = Object.values(pokemon.name).some(name => 
+            name.toLowerCase().includes(searched)
+        );
+
+        // Check if the Pokémon has at least one matching type
+        const typeMatches = types.length === 0 || types.some(type => 
+            pokemon.type.includes(type)
+        );
+
+        // Only include Pokémon that match both criteria
+        return nameMatches && typeMatches;
+    });
+
+    response.json(filteredPokemons);
+});
+
 // application.post("/abc", (request, response) => {
 //     const data = request.body
 //     console.log(data)
