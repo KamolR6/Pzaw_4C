@@ -1,68 +1,56 @@
-//Task of data save into background
-
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRef, useEffect, useState } from "react";
 
 function TaskPokedex() {
-
-  const [types, setTypes] = useState([])
+  const [types, setTypes] = useState([]);
   const [language, setLanguage] = useState("english");
   const [selectedTypes, setSelectedTypes] = useState([]);
-  const [searched, setSearched] = useState("")
-  const [shownPokemons, setShownPokemons] = useState([])
-  const [selectedPokemon, setSelectedPokemon] = useState(null); // Selected Pokémon for modal
-  const [modalVisible, setModalVisible] = useState(false); // Modal visibility
-
-  useEffect(() => {
-    axios.get("http://localhost:8000/pokedex/type",).then((response) => {
-      // console.log(Object.keys(response))
-      // console.log(response.data)
-      setTypes(response.data)
-    }).catch((error) => {
-      console.log(error)
-    })
-      .finally(() => {
-
-      })
-  }, []);
-  useEffect(() => {
-    console.log("selected types: ", selectedTypes)
-    console.log("http://localhost:8000/pokedex/pokemons?searched=" + searched + "&types=[" + selectedTypes.map(type => `"${type}"`) + "]")
-  })
+  const [searched, setSearched] = useState("");
+  const [shownPokemons, setShownPokemons] = useState([]);
+  const [selectedPokemon, setSelectedPokemon] = useState(null); 
+  const [modalVisible, setModalVisible] = useState(false); 
 
 
   useEffect(() => {
-    const typesParam = JSON.stringify(selectedTypes); // Convert to JSON string
-    const url = `http://localhost:8000/pokedex/pokemons?searched=${searched}&types=${typesParam}`;
-    console.log(url);
-
     axios
-      .get(url)
-      .then(response => {
-        console.log(response.data);
-        setShownPokemons(response.data);
+      .get("http://localhost:8000/pokedex/type")
+      .then(response => setTypes(response.data))
+      .catch(error => console.error(error));
+  }, []);
+
+  useEffect(() => {
+    const typesParam = JSON.stringify(selectedTypes); 
+    axios
+      .get("http://localhost:8000/pokedex/pokemons", {
+        params: { searched, types: typesParam },
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .then(response => setShownPokemons(response.data))
+      .catch(error => console.error(error));
   }, [selectedTypes, searched]);
-  // Fetch Pokémon details
+
+
   const fetchPokemonDetails = id => {
     axios
       .get(`http://localhost:8000/pokedex/${id}`)
       .then(response => {
-        setSelectedPokemon(response.data);
-        setModalVisible(true); // Show modal
+        setSelectedPokemon(response.data); 
+        setModalVisible(true); 
       })
-      .catch(error => {
-        console.error(error);
-      });
+      .catch(error => console.error(error));
+  };
+
+  const closeModal = () => {
+    setSelectedPokemon(null);
+    setModalVisible(false);
   };
 
   return (
     <div>
       <div>
-        <input type="text" onChange={e => { setSearched(e.target.value) }}></input>
+        <input
+          type="text"
+          onChange={e => setSearched(e.target.value)}
+        />
       </div>
 
       <label htmlFor="language-select">Select Language: </label>
@@ -76,33 +64,71 @@ function TaskPokedex() {
         <option value="japanese">Japanese</option>
       </select>
 
-
       <div>
         {types.length > 0 ? (
-          types.map((type, index) => <> <label htmlFor={index} key={index}>{type[language]}</label> <input id={index} value={type["english"]} onChange={e => {
-            if (e.target.checked) {
-              setSelectedTypes([...selectedTypes, e.target.value])
-            } else {
-              setSelectedTypes(selectedTypes.filter(type => type !== e.target.value))
-            }
-
-          }} type="checkbox"></input></>)
+          types.map((type, index) => (
+            <div key={index}>
+              <label htmlFor={`type-${index}`}>{type[language]}</label>
+              <input
+                id={`type-${index}`}
+                type="checkbox"
+                value={type["english"]}
+                onChange={e => {
+                  if (e.target.checked) {
+                    setSelectedTypes([...selectedTypes, e.target.value]);
+                  } else {
+                    setSelectedTypes(selectedTypes.filter(t => t !== e.target.value));
+                  }
+                }}
+              />
+            </div>
+          ))
         ) : (
           <p>Loading types...</p>
         )}
       </div>
+
       <div>
         {shownPokemons.length > 0 ? (
-          shownPokemons.map((pokemon, index) => <>
-            <div>
+          shownPokemons.map(pokemon => (
+            <div key={pokemon.id} onClick={() => fetchPokemonDetails(pokemon.id)}>
               <p>{pokemon.name[language]}</p>
             </div>
-          </>
-          )) : <><p>Loading</p></>}
+          ))
+        ) : (
+          <p>No Pokémon found</p>
+        )}
       </div>
+
+      {modalVisible && selectedPokemon && (
+        <div style={modalStyles}>
+          <h2>{selectedPokemon.name[language]}</h2>
+          <p>Type: {selectedPokemon.type.join(", ")}</p>
+          <p>Base Stats:</p>
+          <ul>
+            {Object.entries(selectedPokemon.base).map(([stat, value]) => (
+              <li key={stat}>
+                {stat}: {value}
+              </li>
+            ))}
+          </ul>
+          <button onClick={closeModal}>Close</button>
+        </div>
+      )}
     </div>
   );
 }
 
+const modalStyles = {
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: "white",
+  padding: "20px",
+  border: "1px solid #ccc",
+  borderRadius: "10px",
+  zIndex: 1000,
+};
 
 export default TaskPokedex;
