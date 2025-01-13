@@ -8,3 +8,7 @@
 1. nowy terminal
 1. cd project_backend
 1. npm start
+-------------------------------------------------------------
+1. Tanstack Form - frontend
+1. Tanstack Query - frontend
+1. bCrypt npm - backend
