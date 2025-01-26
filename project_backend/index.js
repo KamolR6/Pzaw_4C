@@ -1,12 +1,14 @@
 const express = require("express")
 const cors = require("cors")
 const e = require("express")
-
+const passwordHash = require('password-hash');
 
 const application = express()
 application.use(cors())
 application.use(express.json())
 const dataGlobal = []
+
+
 
 filePathPokedex = require("../project_backend/pokedex.json")
 filePathTypes = require("../project_backend/types.json")
@@ -14,6 +16,30 @@ pokemonRouter = express.Router()
 pokemonRouter.use(express.json())
 const dataPokedex = []
 const dataTypes = []
+
+//data store
+const reviewData = []; 
+
+//summary
+//endpoint to fetch data (email + password) and hash password
+application.post("/review", (request, response) => {
+    const { email, password } = request.body;
+
+    if (!email || !password) {
+        return response.status(400).json({ error: "Email and password are required" });
+    }
+    const hashedPassword = passwordHash.generate(password);
+    reviewData.push({ email, password: hashedPassword });
+
+    response.status(201).json({ message: "Data received and password hashed successfully" });
+});
+
+//summary
+//test endpoint to check if data is proper
+application.get("/review", (request, response) => {
+    response.json(reviewData); 
+});
+
 
 pokemonRouter.post("/", (request, response) => {
 
