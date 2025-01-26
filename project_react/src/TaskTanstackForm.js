@@ -1,87 +1,53 @@
 import React from 'react';
+import { createRoot } from 'react-dom/client';
 import { useForm } from '@tanstack/react-form';
+
 
 function FieldInfo({ field }) {
   return (
     <>
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em>{field.state.meta.errors.join(', ')}</em>
-      ) : (
-        // Display a generic message if the field is empty
-        field.state.value === '' && <em>This field is required</em>
-      )}
+        <em>{field.state.meta.errors.join(", ")}</em>
+      ) : null}
       {field.state.meta.isValidating ? 'Validating...' : null}
     </>
   );
 }
 
+//form with 3 validated fields fields, tanstack used to create form
+//its sends out data with fetch
 export default function App() {
   const form = useForm({
     defaultValues: {
       email: '',
       password: '',
-      verifyPassword: '',
     },
-    onSubmit: async (formData) => {
-        // Debug log for the formData and values
-        console.log('Form data onSubmit:', formData);
-      
-        const { value } = formData || {};  // Correctly destructure the form values
-        if (!value) {
-          console.log('Form values are missing or undefined');
-          return; // Check for undefined values and return early if invalid
+    onSubmit: async ({ value }) => {
+      try {
+        const requestData = {
+          email: value.email,
+          password: value.password,  // Send raw password
+        };
+    
+        const response = await fetch("http://localhost:8000/review", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestData),
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to send data");
         }
-      
-        const errors = {};
-      
-        // Email validation
-        if (!value.email) {
-          errors.email = 'Email is required';
-        } else if (value.email.length < 3) {
-          errors.email = 'Email must be at least 3 characters';
-        }
-      
-        // Password validation
-        const password = value.password;
-        if (!password) {
-          errors.password = 'Password is required';
-        } else {
-          const hasUpperCase = /[A-Z]/.test(password);
-          const hasNumber = /[0-9]/.test(password);
-          const hasSpecialChar = /[!@#$%^&*]/.test(password);
-      
-          if (!hasUpperCase) {
-            errors.password = 'Password must contain at least one uppercase letter';
-          } else if (!hasNumber) {
-            errors.password = 'Password must contain at least one number';
-          } else if (!hasSpecialChar) {
-            errors.password = 'Password must contain at least one special character';
-          }
-        }
-      
-        // Verify password validation
-        if (!value.verifyPassword) {
-          errors.verifyPassword = 'Please confirm your password';
-        } else if (value.verifyPassword !== password) {
-          errors.verifyPassword = 'Passwords do not match';
-        }
-      
-        // Log the errors object for debugging
-        console.log('Errors found:', errors);
-      
-        // If errors exist, set them and do not proceed
-        if (Object.keys(errors).length > 0) {
-          form.setErrors(errors);
-          return;
-        }
-      
-        // No errors, proceed with form submission
-        console.log('Form submitted successfully:', value);
+    
+        const result = await response.json();
+        console.log("Data successfully sent:", result);
+        alert("Form submitted successfully!");
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Error submitting form. Please try again.");
       }
-      ,
+    }    
   });
-
-  const hasErrors = Object.keys(form.errors || {}).length > 0;
 
   return (
     <div>
@@ -90,17 +56,33 @@ export default function App() {
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          // Log before calling handleSubmit to ensure the submit is triggered
-          console.log('Form submitted, invoking handleSubmit...');
-          form.handleSubmit(); // Trigger form submission handler
+          form.handleSubmit();
         }}
       >
         <div>
           <form.Field
             name="email"
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'Email must not be empty'
+                  : value.length < 3
+                    ? 'Email must be at least 3 letters long'
+                    : !/^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/.test(value)
+                      ? 'Invalid email format (Johndoe@gmail.com)'
+                      : undefined,
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: async ({ value }) => {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                return (
+                  value.includes('error') &&
+                  'No "error" allowed in email'
+                );
+              },
+            }}
             children={(field) => (
               <>
-                <label htmlFor={field.name}>е-пошта:</label>
+                <label htmlFor={field.name}>Email</label>
                 <input
                   id={field.name}
                   name={field.name}
@@ -116,13 +98,23 @@ export default function App() {
         <div>
           <form.Field
             name="password"
+            validators={{
+              onChange: ({ value }) =>
+                !value
+                  ? 'Password must not be empty'
+                  : value.length < 8
+                    ? 'Password must be at least 8 characters long'
+                    : !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(value)
+                      ? 'Password must include at least one lowercase letter, one uppercase letter, one number, and one special character'
+                      : undefined,
+              onChangeAsyncDebounceMs: 500,
+            }}
             children={(field) => (
               <>
-                <label htmlFor={field.name}>пароль:</label>
+                <label htmlFor={field.name}>Password</label>
                 <input
                   id={field.name}
                   name={field.name}
-                  type="password"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -134,31 +126,33 @@ export default function App() {
         </div>
         <div>
           <form.Field
-            name="verifyPassword"
+            name="passwordVerify"
+            validators={{
+              onChange: ({ value }) =>
+                value !== form.getFieldValue('password')
+                  ? 'Passwords must match'
+                  : undefined,
+            }}
             children={(field) => (
               <>
-                <label htmlFor={field.name}>підтвердити пароль:</label>
+                <label htmlFor={field.name}>Verify Password:</label>
                 <input
                   id={field.name}
                   name={field.name}
-                  type="password"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-                {/* Display error message if verifyPassword field has an error */}
-                {form.errors?.verifyPassword && (
-                  <em style={{ color: 'red' }}>{form.errors.verifyPassword}</em>
-                )}
                 <FieldInfo field={field} />
               </>
             )}
           />
         </div>
+
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
-            <button type="submit" disabled={hasErrors || !canSubmit}>
+            <button type="submit" disabled={!canSubmit}>
               {isSubmitting ? '...' : 'Submit'}
             </button>
           )}
