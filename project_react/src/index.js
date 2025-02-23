@@ -3,15 +3,16 @@ import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 import PhotoGallery from "./gallery"
+import TaskEmployees from "./TaskEmployees";
 
 // Create the query client instance
 const queryClient = new QueryClient();
 
-ReactDOM.render(
-  <QueryClientProvider client={queryClient}>
-    <PhotoGallery></PhotoGallery>
-  </QueryClientProvider>,
-  document.getElementById("root")
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <TaskEmployees></TaskEmployees>
+  </React.StrictMode>
 );
 
 
