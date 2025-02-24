@@ -15,8 +15,8 @@ function TaskEmployees() {
 
     //UseEffect przypisujacy "ludzi" do tablicy a jako ze response to obiekt tablica obiektow to wezmiemy sb tylko tablice obiektow jak sigiemki
     useEffect(() => {
-        axios
         //ten catch jest useless do zapamietania
+        axios
             .get("http://localhost:8000/employees")
             .then(response => setItems(response.data.employees))
             .catch(error => console.error(error));
